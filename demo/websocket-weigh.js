@@ -12,7 +12,7 @@ function WebSocketWeigh(options) {
         }
     };
 
-    var settings = Object.assign({}, defaults, options);
+    var settings = $.extend({}, defaults, options);
     var websocket;
     var buffer = '';
 
