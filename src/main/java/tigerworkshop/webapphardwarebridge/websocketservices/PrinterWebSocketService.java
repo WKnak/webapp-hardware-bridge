@@ -24,6 +24,9 @@ import java.awt.print.*;
 import java.io.File;
 import java.io.IOException;
 
+import static tigerworkshop.webapphardwarebridge.utils.SaveToFileHelper.SAVE_TO_DISK_PRINTER_KEY;
+import static tigerworkshop.webapphardwarebridge.utils.SaveToFileHelper.showSaveToFileDialog;
+
 public class PrinterWebSocketService implements WebSocketServiceInterface {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private WebSocketServerInterface server = null;
@@ -56,11 +59,20 @@ public class PrinterWebSocketService implements WebSocketServiceInterface {
         try {
             PrintDocument printDocument = gson.fromJson(message, PrintDocument.class);
             DocumentService.getInstance().prepareDocument(printDocument);
-            printDocument(printDocument);
+            if (isSaveToFile(printDocument)) {
+                showSaveToFileDialog(printDocument);
+            } else {
+                printDocument(printDocument);
+            }
         } catch (Exception e) {
             logger.error(e.getClass().getCanonicalName());
             logger.debug(e.getMessage(), e);
         }
+    }
+
+    private boolean isSaveToFile(PrintDocument printDocument) {
+        String mappedPrinter = findMappedPrinter(printDocument.getType());
+        return (mappedPrinter != null) && (mappedPrinter.contains(SAVE_TO_DISK_PRINTER_KEY));
     }
 
     @Override
@@ -289,7 +301,7 @@ public class PrinterWebSocketService implements WebSocketServiceInterface {
     /**
      * Get DocPrintJob for specified printer
      */
-     private DocPrintJob getDocPrintJob(String type) throws PrinterException {
+    private DocPrintJob getDocPrintJob(String type) throws PrinterException {
         String printerName = findMappedPrinter(type);
 
         if (printerName != null) {
@@ -303,7 +315,7 @@ public class PrinterWebSocketService implements WebSocketServiceInterface {
             }
         }
 
-        if(settingService.getSetting().isAddUnknownPrintTypeToListEnabed()) {
+        if (settingService.getSetting().isAddUnknownPrintTypeToListEnabed()) {
             settingService.addPrintTypeToList(type);
         }
 
@@ -314,4 +326,5 @@ public class PrinterWebSocketService implements WebSocketServiceInterface {
             throw new PrinterException("No matched printer: " + type);
         }
     }
+
 }

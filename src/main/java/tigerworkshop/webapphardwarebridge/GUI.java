@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import tigerworkshop.webapphardwarebridge.interfaces.NotificationListenerInterface;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,8 +28,24 @@ public class GUI extends Application implements NotificationListenerInterface {
     SystemTray tray;
 
     public static void main(String[] args) {
+
+        setDialogLookAndFeel();
+
         GUI gui = new GUI();
         gui.launch();
+    }
+
+    /**
+     * Define the style for the native "save to file" dialog
+     */
+    private static void setDialogLookAndFeel() {
+        for (UIManager.LookAndFeelInfo info: UIManager.getInstalledLookAndFeels()) {
+            try {
+                UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void launch() {

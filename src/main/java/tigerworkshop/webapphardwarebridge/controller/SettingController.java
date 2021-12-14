@@ -22,6 +22,7 @@ import javafx.util.Callback;
 import tigerworkshop.webapphardwarebridge.responses.Setting;
 import tigerworkshop.webapphardwarebridge.services.SettingService;
 import tigerworkshop.webapphardwarebridge.utils.ObservableStringPair;
+import tigerworkshop.webapphardwarebridge.utils.SaveToFileHelper;
 
 import javax.print.PrintService;
 import java.awt.*;
@@ -289,6 +290,7 @@ public class SettingController implements Initializable {
 
     private ArrayList<String> listPrinters() {
         ArrayList<String> printerList = new ArrayList<>();
+        printerList.add(SaveToFileHelper.SAVE_TO_DISK_PRINTER_DESCRIPTION);
         PrintService[] printServices = PrinterJob.lookupPrintServices();
         for (PrintService printService : printServices) {
             printerList.add(printService.getName());
